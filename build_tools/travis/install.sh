@@ -25,6 +25,7 @@ if [[ "$DISTRIB" == "conda" ]]; then
     # Deactivate the travis-provided virtual environment and setup a
     # conda-based environment instead
     deactivate
+    rm -rf $HOME/.conda
 
     # Install miniconda
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
@@ -37,23 +38,29 @@ if [[ "$DISTRIB" == "conda" ]]; then
     # Configure the conda environment and put it in the path using the
     # provided versions
     conda create -n testenv --yes python=$PYTHON_VERSION pip
+    conda install --yes conda-build
     source activate testenv
     conda install --yes nose pytest pytest-cov python-dateutil
-    if [[ "$NUMPY" == "true" ]]; then
-        conda install --yes numpy
-    fi
-    if [[ "$JPEG2000" == "true" ]]; then
-        echo cant apt-get install libopenjp2-7 libopenjp2-7-dev
-    fi
-    if [[ "$JPEG_LS" == "true" ]]; then
-        echo cant do python -m pip install CharPyLS
-    fi
-    if [[ "$PILLOW" == "true" ]]; then
-        conda install --yes pillow jpeg
-    fi
-    if [[ "$GDCM" == "true" ]]; then
-        conda install --yes -c conda-forge gdcm
-    fi
+    conda config --add channels conda-forge
+    conda config --show
+    conda info
+    conda search imbalanced-learn --channel glemaitre
+    conda install --yes -c glemaitre imbalanced-learn
+    # if [[ "$NUMPY" == "true" ]]; then
+    #     conda install --yes numpy
+    # fi
+    # if [[ "$JPEG2000" == "true" ]]; then
+    #     echo cant apt-get install libopenjp2-7 libopenjp2-7-dev
+    # fi
+    # if [[ "$JPEG_LS" == "true" ]]; then
+    #     echo cant do python -m pip install CharPyLS
+    # fi
+    # if [[ "$PILLOW" == "true" ]]; then
+    #     conda install --yes pillow jpeg
+    # fi
+    # if [[ "$GDCM" == "true" ]]; then
+    #     conda install --yes -c conda-forge gdcm
+    # fi
     # Install nose-timer via pip
     pip install nose-timer codecov
 
